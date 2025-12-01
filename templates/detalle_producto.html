@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ producto.nombre }} - TiendaAnime{% endblock %}
+
+{% block contenido %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="mb-3">
+            {% for img in producto.imagenes.all %}
+                <img src="{{ img.imagen.url }}" class="img-fluid mb-2 shadow-sm rounded" style="max-height:400px; object-fit:contain; width:100%;">
+            {% empty %}
+                <img src="https://via.placeholder.com/600x400?text=Sin+imagen" class="img-fluid mb-2">
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <h2>{{ producto.nombre }}</h2>
+        <p class="text-muted">Categoría: <strong>{{ producto.categoria.nombre }}</strong></p>
+        
+        <h4 class="text-primary fw-bold">${{ producto.precio_base }}</h4>
+
+        {% if cantidad_resenas > 0 %}
+        <div class="mb-3">
+            <p class="mb-1"><strong>⭐ Calificación Promedio:</strong></p>
+            <div>
+                <span style="color: #ffc107; font-size: 1.3rem;">
+                    {% for i in "12345" %}
+                        {% if i|add:0 <= promedio %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </span>
+                <span class="ms-2">{{ promedio }}/5 ({{ cantidad_resenas }} reseña{{ cantidad_resenas|pluralize }})</span>
+            </div>
+        </div>
+        {% endif %}
+        
+        <p class="mt-3">{{ producto.descripcion }}</p>
+
+        <div class="d-grid gap-2 mt-4">
+            <a href="{% url 'solicitar_producto' producto.id %}" class="btn btn-success btn-lg">
+                ✓ Solicitar este producto
+            </a>
+            <a href="{% url 'catalogo' %}" class="btn btn-outline-secondary">
+                ← Volver al catálogo
+            </a>
+        </div>
+    </div>
+</div>
+
+<hr class="my-5">
+
+<div class="row">
+    <div class="col-md-8">
+        <h3 class="mb-4">📝 Reseñas y Comentarios</h3>
+
+        <div class="card mb-4 bg-light">
+            <div class="card-header">
+                <h5 class="mb-0">Deja tu reseña</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.nombre_cliente.label }}</label>
+                        {{ form.nombre_cliente }}
+                        {% if form.nombre_cliente.errors %}<div class="text-danger small">{{ form.nombre_cliente.errors }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.email_cliente.label }}</label>
+                        {{ form.email_cliente }}
+                        {% if form.email_cliente.errors %}<div class="text-danger small">{{ form.email_cliente.errors }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.calificacion.label }}</label>
+                        <div class="form-check">
+                            {% for radio in form.calificacion %}
+                                <div class="mb-2">
+                                    {{ radio.tag }}
+                                    <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                        {{ radio.choice_label }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% if form.calificacion.errors %}<div class="text-danger small">{{ form.calificacion.errors }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.comentario.label }}</label>
+                        {{ form.comentario }}
+                        {% if form.comentario.errors %}<div class="text-danger small">{{ form.comentario.errors }}</div>{% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Enviar Reseña</button>
+                </form>
+            </div>
+        </div>
+
+        {% if resenas %}
+        <div class="mb-4">
+            {% for resena in resenas %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title mb-1">{{ resena.nombre_cliente }}</h6>
+                            <p class="text-muted small mb-2">
+                                <span style="color: #ffc107;">
+                                    {% for i in "12345" %}
+                                        {% if i|add:0 <= resena.calificacion %}★{% else %}☆{% endif %}
+                                    {% endfor %}
+                                </span>
+                                {{ resena.calificacion }}/5
+                            </p>
+                        </div>
+                        <small class="text-muted">{{ resena.fecha_creacion|date:"d/m/Y" }}</small>
+                    </div>
+                    <p class="card-text">{{ resena.comentario }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            Aún no hay reseñas. ¡Sé el primero en calificar este producto!
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block titulo %}Catálogo - TiendaAnime{% endblock %}
+
+{% block contenido %}
+
+<div class="alert alert-info mb-4" role="alert">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <strong>📌 ¿Ya hiciste un pedido?</strong> Consulta el estado ingresando tu código de seguimiento.
+        </div>
+        <a href="{% url 'consultar_token' %}" class="btn btn-sm btn-info">Consultar Pedido</a>
+    </div>
+</div>
+
+{% if destacados %}
+<section class="mb-5">
+    <h2 class="mb-4 text-center">⭐ Productos Destacados</h2>
+    <div class="row g-3 justify-content-center">
+        {% for producto in destacados %}
+        <div class="col-auto col-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card h-100 shadow-sm border-warning text-center">
+                {% with primera=producto.imagenes.first %}
+                    {% if primera %}
+                        <img src="{{ primera.imagen.url }}" class="card-img-top featured-img mx-auto" alt="{{ producto.nombre }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/200x150?text=Sin+imagen" class="card-img-top featured-img mx-auto" alt="sin imagen">
+                    {% endif %}
+                {% endwith %}
+
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title">{{ producto.nombre }}</h6>
+
+                    <p class="card-text text-muted small mb-1">{{ producto.categoria.nombre }}</p>
+
+                    {% if producto.cantidad_resenas > 0 %}
+                    <p class="small text-muted mb-1">
+                        <span style="color: #ffc107;">
+                            {% with promedio=producto.promedio_calificacion %}
+                                {% for i in "12345" %}
+                                    {% if i|add:0 <= promedio %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                            {% endwith %}
+                        </span>
+                        ({{ producto.cantidad_resenas }})
+                    </p>
+                    {% endif %}
+
+                    <p class="card-text text-primary fw-bold">${{ producto.precio_base }}</p>
+                    <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-sm btn-warning mt-auto">Ver</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<hr>
+{% endif %}
+
+<div class="row">
+ 
+    <div class="col-md-3">
+        <h5 class="mb-3">Categorías</h5>
+        <div class="list-group">
+            <a href="{% url 'catalogo' %}" class="list-group-item list-group-item-action {% if not categoria_activa %}active{% endif %}">
+                Todas
+            </a>
+            {% for categoria in categorias %}
+            <a href="?categoria={{ categoria.id }}" class="list-group-item list-group-item-action {% if categoria.id|stringformat:'s' == categoria_activa %}active{% endif %}">
+                {{ categoria.nombre }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+   
+    <div class="col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0">Productos</h2>
+            <small class="text-muted">{{ productos|length }} producto(s)</small>
+        </div>
+
+        {% if productos %}
+        <div class="row g-3">
+            {% for producto in productos %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    {% with primera=producto.imagenes.first %}
+                        {% if primera %}
+                            <img src="{{ primera.imagen.url }}" class="card-img-top product-img" alt="{{ producto.nombre }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x300?text=Sin+imagen" class="card-img-top product-img" alt="sin imagen">
+                        {% endif %}
+                    {% endwith %}
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ producto.nombre }}</h5>
+
+                      
+                        <p class="card-text text-muted small mb-2">{{ producto.categoria.nombre }}</p>
+
+                        {% if producto.cantidad_resenas > 0 %}
+                        <p class="small text-muted mb-2">
+                            <span style="color: #ffc107;">
+                                {% with promedio=producto.promedio_calificacion %}
+                                    {% for i in "12345" %}
+                                        {% if i|add:0 <= promedio %}★{% else %}☆{% endif %}
+                                    {% endfor %}
+                                {% endwith %}
+                            </span>
+                            {{ producto.promedio_calificacion }}/5 ({{ producto.cantidad_resenas }})
+                        </p>
+                        {% endif %}
+
+                        <p class="card-text text-primary fs-5 fw-bold">${{ producto.precio_base }}</p>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-sm btn-primary">Ver detalles</a>
+                            <a href="{% url 'solicitar_producto' producto.id %}" class="btn btn-sm btn-success">Solicitar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info mt-3">No hay productos en esta categoría.</div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

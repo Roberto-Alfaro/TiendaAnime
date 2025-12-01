@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block titulo %}Solicitud de Pedido - TiendaAnime{% endblock %}
+
+{% block contenido %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Solicitud de Pedido</h2>
+
+        <div class="card bg-light p-3 mb-4">
+            <p class="mb-0"><strong>Producto:</strong> {{ producto.nombre }}</p>
+            <p class="mb-0"><strong>Precio base:</strong> ${{ producto.precio_base }}</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Nombre del cliente *</label>
+                {{ form.cliente }}
+                {% if form.cliente.errors %}<div class="text-danger small">{{ form.cliente.errors }}</div>{% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Contacto (teléfono o email) *</label>
+                {{ form.contacto }}
+                {% if form.contacto.errors %}<div class="text-danger small">{{ form.contacto.errors }}</div>{% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Descripción del pedido *</label>
+                {{ form.descripcion }}
+                {% if form.descripcion.errors %}<div class="text-danger small">{{ form.descripcion.errors }}</div>{% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Fecha solicitada</label>
+                {{ form.fecha_solicitud }}
+                {% if form.fecha_solicitud.errors %}<div class="text-danger small">{{ form.fecha_solicitud.errors }}</div>{% endif %}
+            </div>
+
+            {{ form.producto_referencia }}
+
+            <div class="mb-3">
+                <label class="form-label">Imágenes de referencia</label>
+                {{ form.imagenes }}
+                <small class="form-text text-muted d-block mt-2">Puedes subir una o varias imágenes de referencia para tu pedido.</small>
+                {% if form.imagenes.errors %}<div class="text-danger small">{{ form.imagenes.errors }}</div>{% endif %}
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">Enviar Pedido</button>
+                <a href="{% url 'catalogo' %}" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card sticky-top" style="top:20px;">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Resumen</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Producto:</strong><br>{{ producto.nombre }}</p>
+                <p><strong>Precio:</strong><br><span class="text-primary fw-bold">${{ producto.precio_base }}</span></p>
+                <p class="small text-muted">Completa el formulario con los detalles de tu pedido.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

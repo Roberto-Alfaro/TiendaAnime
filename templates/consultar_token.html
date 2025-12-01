@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block titulo %}Consultar Pedido - TiendaAnime{% endblock %}
+
+{% block contenido %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">🔍 Consultar Estado de tu Pedido</h3>
+            </div>
+
+            <div class="card-body p-4">
+                <p class="text-muted mb-4">Ingresa tu código de seguimiento para consultar el estado de tu pedido.</p>
+
+                <form method="post" class="mb-4">
+                    {% csrf_token %}
+
+                    <div class="input-group input-group-lg mb-3">
+                        <input type="text" name="token" class="form-control" placeholder="Ej: a1b2c3d4e5f6..." required>
+                        <button class="btn btn-primary" type="submit">Consultar</button>
+                    </div>
+                </form>
+
+                {% if error %}
+                <div class="alert alert-danger">
+                    <strong>❌ Error:</strong> {{ error }}
+                </div>
+                {% endif %}
+
+                {% if pedido %}
+                <div class="alert alert-success mb-0">
+                    <strong>✅ Pedido encontrado</strong>
+                </div>
+
+                <hr>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p><strong>👤 Cliente:</strong> {{ pedido.cliente }}</p>
+                        <p><strong>📱 Contacto:</strong> {{ pedido.contacto }}</p>
+                        <p><strong>📍 Plataforma:</strong> {{ pedido.get_plataforma_display }}</p>
+                        <p><strong>📅 Fecha de solicitud:</strong> {{ pedido.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <p><strong>📊 Estado del Pedido:</strong><br>
+                            <span class="badge bg-info fs-5">{{ pedido.get_estado_display }}</span>
+                        </p>
+
+                        <p><strong>💰 Estado de Pago:</strong><br>
+                            <span class="badge {% if pedido.pago == 'pagado' %}bg-success{% elif pedido.pago == 'parcial' %}bg-warning{% else %}bg-danger{% endif %} fs-5">{{ pedido.get_pago_display }}</span>
+                        </p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <p><strong>📦 Producto Solicitado:</strong>
+                    {% if pedido.producto_referencia %}
+                        {{ pedido.producto_referencia.nombre }}
+                    {% else %}
+                        Pedido personalizado
+                    {% endif %}
+                </p>
+
+                {% if pedido.fecha_solicitud %}
+                <p><strong>⏰ Fecha Requerida:</strong> {{ pedido.fecha_solicitud|date:"d/m/Y" }}</p>
+                {% endif %}
+
+                <p><strong>📝 Descripción:</strong></p>
+                <div class="bg-light p-3 rounded mb-3">{{ pedido.descripcion }}</div>
+
+                {% if pedido.imagenes.all %}
+                <p><strong>🖼️ Imágenes de Referencia:</strong></p>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    {% for img in pedido.imagenes.all %}
+                        <img src="{{ img.imagen.url }}" class="img-thumbnail" style="max-height:120px; cursor:pointer;" data-bs-toggle="modal" data-bs-target="#imagenModal" onclick="document.getElementById('imagenModalImg').src='{{ img.imagen.url }}'">
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="d-flex gap-2">
+                    <a href="{% url 'seguimiento' pedido.token_seguimiento %}" class="btn btn-primary">Ver Detalles Completos</a>
+                    <a href="{% url 'catalogo' %}" class="btn btn-outline-secondary">Volver al catálogo</a>
+                </div>
+
+                {% endif %}
+            </div>
+        </div>
+
+        {% if not pedido and not error %}
+        <div class="card mt-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">💡 ¿Cómo funciona?</h5>
+            </div>
+            <div class="card-body">
+                <ol>
+                    <li>Cuando creas un pedido, recibirás un <strong>código de seguimiento único</strong></li>
+                    <li>Ingresa ese código en el campo superior</li>
+                    <li>Verás el estado actual de tu pedido y el estado del pago</li>
+                    <li>Podrás revisar tus imágenes de referencia en cualquier momento</li>
+                </ol>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div class="modal fade" id="imagenModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <img id="imagenModalImg" src="" class="img-fluid w-100">
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
