@@ -42,10 +42,10 @@
             {{ form.producto_referencia }}
 
             <div class="mb-3">
-                <label class="form-label">Imágenes de referencia</label>
-                {{ form.imagenes }}
-                <small class="form-text text-muted d-block mt-2">Puedes subir una o varias imágenes de referencia para tu pedido.</small>
-                {% if form.imagenes.errors %}<div class="text-danger small">{{ form.imagenes.errors }}</div>{% endif %}
+                <label class="form-label">{{ form.imagen_referencia.label }}</label>
+                {{ form.imagen_referencia }}
+                <small class="form-text text-muted d-block mt-2">Sube una imagen de referencia para tu pedido (PNG, JPG, JPEG).</small>
+                {% if form.imagen_referencia.errors %}<div class="text-danger small">{{ form.imagen_referencia.errors }}</div>{% endif %}
             </div>
 
             <div class="d-grid gap-2">
@@ -68,4 +68,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
