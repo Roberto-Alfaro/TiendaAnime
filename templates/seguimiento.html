@@ -12,15 +12,15 @@
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <p><strong>👤 Cliente:</strong> {{ pedido.cliente }}</p>
-                    <p><strong>📱 Contacto:</strong> {{ pedido.contacto }}</p>
-                    <p><strong>📍 Plataforma:</strong> {{ pedido.get_plataforma_display }}</p>
+                    <p><strong>Cliente:</strong> {{ pedido.cliente }}</p>
+                    <p><strong>Contacto:</strong> {{ pedido.contacto }}</p>
+                    <p><strong>Plataforma:</strong> {{ pedido.get_plataforma_display }}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>📊 Estado:</strong> 
+                    <p><strong>Estado:</strong> 
                         <span class="badge bg-primary fs-6">{{ pedido.get_estado_display }}</span>
                     </p>
-                    <p><strong>💰 Pago:</strong> 
+                    <p><strong>Pago:</strong> 
                         <span class="badge {% if pedido.pago == 'pagado' %}bg-success{% elif pedido.pago == 'parcial' %}bg-warning{% else %}bg-danger{% endif %} fs-6">{{ pedido.get_pago_display }}</span>
                     </p>
                     <p><strong>📅 Fecha:</strong> {{ pedido.fecha_creacion|date:"d/m/Y H:i" }}</p>
@@ -29,7 +29,7 @@
 
             <hr>
 
-            <p><strong>📦 Producto Solicitado:</strong> 
+            <p><strong>Producto Solicitado:</strong> 
                 {% if pedido.producto_referencia %}
                     <a href="{% url 'detalle_producto' pedido.producto_referencia.id %}">{{ pedido.producto_referencia.nombre }}</a>
                 {% else %}
@@ -38,15 +38,15 @@
             </p>
 
             {% if pedido.fecha_solicitud %}
-            <p><strong>⏰ Fecha Requerida:</strong> {{ pedido.fecha_solicitud|date:"d/m/Y" }}</p>
+            <p><strong>Fecha Requerida:</strong> {{ pedido.fecha_solicitud|date:"d/m/Y" }}</p>
             {% endif %}
 
-            <p><strong>📝 Descripción:</strong></p>
+            <p><strong>Descripción:</strong></p>
             <div class="bg-light p-3 rounded">{{ pedido.descripcion }}</div>
 
             {% if pedido.imagenes.all %}
             <hr>
-            <p><strong>🖼️ Imágenes de Referencia:</strong></p>
+            <p><strong>Imágenes de Referencia:</strong></p>
             <div class="d-flex flex-wrap gap-3">
                 {% for img in pedido.imagenes.all %}
                     <img src="{{ img.imagen.url }}" class="img-thumbnail" style="max-height:150px; cursor:pointer;" data-bs-toggle="modal" data-bs-target="#imagenModal" onclick="document.getElementById('imagenModalImg').src='{{ img.imagen.url }}'">
@@ -59,7 +59,7 @@
     <div class="col-md-4">
         <div class="card sticky-top" style="top:20px;">
             <div class="card-header bg-info text-white">
-                <h5 class="mb-0">📌 Token de Seguimiento</h5>
+                <h5 class="mb-0">Token de Seguimiento</h5>
             </div>
             <div class="card-body">
                 <p class="small text-muted">Guarda este código para futuras consultas:</p>
@@ -69,11 +69,11 @@
                 
                 {% if pedido.pago != 'pagado' %}
                 <div class="alert alert-warning alert-sm">
-                    <strong>⚠️ Estado de Pago:</strong> {{ pedido.get_pago_display }}
+                    <strong>Estado de Pago:</strong> {{ pedido.get_pago_display }}
                 </div>
                 {% else %}
                 <div class="alert alert-success alert-sm">
-                    <strong>✅ Pago confirmado</strong>
+                    <strong>Pago confirmado</strong>
                 </div>
                 {% endif %}
                 
