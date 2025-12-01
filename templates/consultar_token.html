@@ -7,7 +7,7 @@
     <div class="col-md-8 offset-md-2">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
-                <h3 class="mb-0">🔍 Consultar Estado de tu Pedido</h3>
+                <h3 class="mb-0">Consultar Estado de tu Pedido</h3>
             </div>
 
             <div class="card-body p-4">
@@ -24,31 +24,31 @@
 
                 {% if error %}
                 <div class="alert alert-danger">
-                    <strong>❌ Error:</strong> {{ error }}
+                    <strong>Error:</strong> {{ error }}
                 </div>
                 {% endif %}
 
                 {% if pedido %}
                 <div class="alert alert-success mb-0">
-                    <strong>✅ Pedido encontrado</strong>
+                    <strong>Pedido encontrado</strong>
                 </div>
 
                 <hr>
 
                 <div class="row mt-4">
                     <div class="col-md-6">
-                        <p><strong>👤 Cliente:</strong> {{ pedido.cliente }}</p>
-                        <p><strong>📱 Contacto:</strong> {{ pedido.contacto }}</p>
-                        <p><strong>📍 Plataforma:</strong> {{ pedido.get_plataforma_display }}</p>
-                        <p><strong>📅 Fecha de solicitud:</strong> {{ pedido.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                        <p><strong>Cliente:</strong> {{ pedido.cliente }}</p>
+                        <p><strong>Contacto:</strong> {{ pedido.contacto }}</p>
+                        <p><strong>Plataforma:</strong> {{ pedido.get_plataforma_display }}</p>
+                        <p><strong>Fecha de solicitud:</strong> {{ pedido.fecha_creacion|date:"d/m/Y H:i" }}</p>
                     </div>
 
                     <div class="col-md-6">
-                        <p><strong>📊 Estado del Pedido:</strong><br>
+                        <p><strong>Estado del Pedido:</strong><br>
                             <span class="badge bg-info fs-5">{{ pedido.get_estado_display }}</span>
                         </p>
 
-                        <p><strong>💰 Estado de Pago:</strong><br>
+                        <p><strong>Estado de Pago:</strong><br>
                             <span class="badge {% if pedido.pago == 'pagado' %}bg-success{% elif pedido.pago == 'parcial' %}bg-warning{% else %}bg-danger{% endif %} fs-5">{{ pedido.get_pago_display }}</span>
                         </p>
                     </div>
@@ -56,7 +56,7 @@
 
                 <hr>
 
-                <p><strong>📦 Producto Solicitado:</strong>
+                <p><strong>Producto Solicitado:</strong>
                     {% if pedido.producto_referencia %}
                         {{ pedido.producto_referencia.nombre }}
                     {% else %}
@@ -65,14 +65,14 @@
                 </p>
 
                 {% if pedido.fecha_solicitud %}
-                <p><strong>⏰ Fecha Requerida:</strong> {{ pedido.fecha_solicitud|date:"d/m/Y" }}</p>
+                <p><strong>Fecha Requerida:</strong> {{ pedido.fecha_solicitud|date:"d/m/Y" }}</p>
                 {% endif %}
 
-                <p><strong>📝 Descripción:</strong></p>
+                <p><strong>Descripción:</strong></p>
                 <div class="bg-light p-3 rounded mb-3">{{ pedido.descripcion }}</div>
 
                 {% if pedido.imagenes.all %}
-                <p><strong>🖼️ Imágenes de Referencia:</strong></p>
+                <p><strong>Imágenes de Referencia:</strong></p>
                 <div class="d-flex flex-wrap gap-2 mb-3">
                     {% for img in pedido.imagenes.all %}
                         <img src="{{ img.imagen.url }}" class="img-thumbnail" style="max-height:120px; cursor:pointer;" data-bs-toggle="modal" data-bs-target="#imagenModal" onclick="document.getElementById('imagenModalImg').src='{{ img.imagen.url }}'">
@@ -92,7 +92,7 @@
         {% if not pedido and not error %}
         <div class="card mt-4">
             <div class="card-header bg-light">
-                <h5 class="mb-0">💡 ¿Cómo funciona?</h5>
+                <h5 class="mb-0">¿Cómo funciona?</h5>
             </div>
             <div class="card-body">
                 <ol>
