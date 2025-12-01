@@ -23,7 +23,6 @@ class Producto(models.Model):
         return self.nombre
 
     def promedio_calificacion(self):
-        """Calcula el promedio de calificaciones del producto"""
         reseñas = self.resenas.filter(aprobada=True)
         if not reseñas.exists():
             return 0
@@ -31,7 +30,6 @@ class Producto(models.Model):
         return round(total / reseñas.count(), 1)
 
     def cantidad_resenas(self):
-        """Retorna la cantidad de reseñas aprobadas"""
         return self.resenas.filter(aprobada=True).count()
 
 class ImagenProducto(models.Model):
@@ -118,7 +116,6 @@ class ImagenReferencia(models.Model):
         verbose_name_plural = "Imágenes de Referencia"
 
 class Resena(models.Model):
-    """Modelo para reseñas y calificaciones de productos"""
     producto = models.ForeignKey(Producto, related_name="resenas", on_delete=models.CASCADE)
     nombre_cliente = models.CharField(max_length=100)
     email_cliente = models.EmailField(blank=True, null=True)
