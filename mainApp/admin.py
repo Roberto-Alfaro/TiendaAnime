@@ -48,7 +48,7 @@ class PedidoAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if obj.estado == "finalizada" and obj.pago != "pagado":
-            self.message_user(request, "❌ No puedes finalizar un pedido que no está completamente pagado", level=40)
+            self.message_user(request, "No puedes finalizar un pedido que no está completamente pagado", level=40)
             return
         super().save_model(request, obj, form, change)
 
@@ -61,7 +61,6 @@ class ResenaAdmin(admin.ModelAdmin):
     list_editable = ("aprobada",)
 
     def calificacion_stars(self, obj):
-        """Muestra las estrellas en admin"""
         return "⭐" * obj.calificacion
     calificacion_stars.short_description = "Calificación"
 
