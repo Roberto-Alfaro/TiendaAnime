@@ -1,14 +1,15 @@
 from django import forms
 from .models import Pedido, ImagenReferencia, Resena
 
-class MultipleFileInput(forms.ClearableFileInput):
-    allow_multiple_selected = True
-
 class FormPedido(forms.ModelForm):
-    imagenes = forms.FileField(
-        widget=MultipleFileInput(attrs={"multiple": True, "class": "form-control"}),
+    imagen_referencia = forms.ImageField(
+        widget=forms.FileInput(attrs={
+            
+            "class": "form-control",
+            "accept": "image/*"
+        }),
         required=False,
-        label="Imágenes de referencia"
+        label="Imagen de referencia"
     )
 
     class Meta:
@@ -34,18 +35,8 @@ class FormPedido(forms.ModelForm):
             raise forms.ValidationError("Por favor ingresa un nombre válido")
         return cliente
 
-    def clean_imagenes(self):
-        if not hasattr(self, "files") or not self.files:
-            return None
-        return self.files.getlist("imagenes")
-
     def save(self, commit=True):
         pedido = super().save(commit=commit)
-        if commit:
-            files = self.cleaned_data.get("imagenes")
-            if files:
-                for f in files:
-                    ImagenReferencia.objects.create(pedido=pedido, imagen=f)
         return pedido
 
 class FormImagenReferencias(forms.ModelForm):
@@ -57,6 +48,7 @@ class FormImagenReferencias(forms.ModelForm):
         }
 
 class FormResena(forms.ModelForm):
+    """Formulario para que clientes dejen reseñas"""
     calificacion = forms.ChoiceField(
         choices=[(i, f"{i} ⭐") for i in range(1, 6)],
         widget=forms.RadioSelect,
