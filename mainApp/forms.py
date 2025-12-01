@@ -57,7 +57,6 @@ class FormImagenReferencias(forms.ModelForm):
         }
 
 class FormResena(forms.ModelForm):
-    """Formulario para que clientes dejen reseñas"""
     calificacion = forms.ChoiceField(
         choices=[(i, f"{i} ⭐") for i in range(1, 6)],
         widget=forms.RadioSelect,
