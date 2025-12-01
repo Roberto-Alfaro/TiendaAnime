@@ -68,11 +68,17 @@ def solicitar_producto(request, id):
             pedido.plataforma = "web"
             pedido.save()
 
-            for img in request.FILES.getlist("imagenes"):
-                ImagenReferencia.objects.create(pedido=pedido, imagen=img)
+            # Capturar imagen única
+            imagen = request.FILES.get("imagen_referencia")
+            if imagen:
+                ImagenReferencia.objects.create(pedido=pedido, imagen=imagen)
 
-            messages.success(request, f"Pedido creado exitosamente. Tu código de seguimiento es: {pedido.token_seguimiento}")
+            messages.success(request, f"✅ Pedido creado exitosamente. Tu código de seguimiento es: {pedido.token_seguimiento}")
             return redirect("seguimiento", token=pedido.token_seguimiento)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{error}")
     else:
         form = FormPedido(initial={"producto_referencia": producto.id})
 
