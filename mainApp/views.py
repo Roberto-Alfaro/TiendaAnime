@@ -43,7 +43,7 @@ def detalle_producto(request, id):
             resena = form.save(commit=False)
             resena.producto = producto
             resena.save()
-            messages.success(request, "✅ ¡Gracias por tu reseña! Será revisada antes de publicarse.")
+            messages.success(request, "¡Gracias por tu reseña! Será revisada antes de publicarse.")
             return redirect("detalle_producto", id=producto.id)
     else:
         form = FormResena()
@@ -71,7 +71,7 @@ def solicitar_producto(request, id):
             for img in request.FILES.getlist("imagenes"):
                 ImagenReferencia.objects.create(pedido=pedido, imagen=img)
 
-            messages.success(request, f"✅ Pedido creado exitosamente. Tu código de seguimiento es: {pedido.token_seguimiento}")
+            messages.success(request, f"Pedido creado exitosamente. Tu código de seguimiento es: {pedido.token_seguimiento}")
             return redirect("seguimiento", token=pedido.token_seguimiento)
     else:
         form = FormPedido(initial={"producto_referencia": producto.id})
