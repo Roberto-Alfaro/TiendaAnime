@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-9m4^50hc)6@h^7onw*c+!a7#0(c1^4aewe$izlhalq6xr$voa%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://tiendaanime.onrender.com"]
 
 
 # Application definition
