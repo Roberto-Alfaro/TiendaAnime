@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q
-from .models import Producto, Categoria, Pedido, ImagenReferencia, Resena
+from django.db.models import Q, Count
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.dateparse import parse_date
+import json
+from .models import Producto, Categoria, Pedido, ImagenReferencia, Resena, ESTADOS_PEDIDO, PLATAFORMAS
 from .forms import FormPedido, FormResena
 from django.contrib import messages
 
@@ -110,3 +113,64 @@ def consultar_token(request):
         "pedido": pedido,
         "error": error,
     })
+
+
+def _es_staff(user):
+    return user.is_active and user.is_staff
+
+
+@user_passes_test(_es_staff)
+def reporte(request):
+    # Filtros
+    fecha_desde = request.GET.get("fecha_desde")
+    fecha_hasta = request.GET.get("fecha_hasta")
+    estado_sel = request.GET.getlist("estado")
+
+    qs = Pedido.objects.all()
+
+    if fecha_desde:
+        d = parse_date(fecha_desde)
+        if d:
+            qs = qs.filter(fecha_creacion__date__gte=d)
+
+    if fecha_hasta:
+        d = parse_date(fecha_hasta)
+        if d:
+            qs = qs.filter(fecha_creacion__date__lte=d)
+
+    if estado_sel:
+        qs = qs.filter(estado__in=estado_sel)
+
+    # Pedidos por estado (usar labels legibles)
+    estado_map = dict(ESTADOS_PEDIDO)
+    pedidos_por_estado_qs = qs.values("estado").annotate(cantidad=Count("id")).order_by("estado")
+    estados_labels = [estado_map.get(p["estado"], p["estado"]) for p in pedidos_por_estado_qs]
+    estados_vals = [p["cantidad"] for p in pedidos_por_estado_qs]
+
+    # Productos más solicitados
+    productos_qs = qs.values("producto_referencia__nombre").annotate(cantidad=Count("id")).order_by("-cantidad")[:10]
+    productos_labels = [p["producto_referencia__nombre"] or "(sin ref)" for p in productos_qs]
+    productos_vals = [p["cantidad"] for p in productos_qs]
+
+    # Pedidos por plataforma
+    plataforma_map = dict(PLATAFORMAS)
+    plataformas_qs = qs.values("plataforma").annotate(cantidad=Count("id")).order_by("plataforma")
+    plataformas_labels = [plataforma_map.get(p["plataforma"], p["plataforma"]) for p in plataformas_qs]
+    plataformas_vals = [p["cantidad"] for p in plataformas_qs]
+
+    context = {
+        "estados_labels": json.dumps(estados_labels),
+        "estados_vals": json.dumps(estados_vals),
+        "productos_labels": json.dumps(productos_labels),
+        "productos_vals": json.dumps(productos_vals),
+        "plataformas_labels": json.dumps(plataformas_labels),
+        "plataformas_vals": json.dumps(plataformas_vals),
+        "filtros": {
+            "fecha_desde": fecha_desde,
+            "fecha_hasta": fecha_hasta,
+            "estado_sel": estado_sel,
+        }
+    }
+    context["estados_choices"] = ESTADOS_PEDIDO
+
+    return render(request, "reporte.html", context)
