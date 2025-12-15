@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load range_tags %}
 
 {% block titulo %}Catálogo - TiendaAnime{% endblock %}
 
@@ -37,8 +38,8 @@
                     <p class="small text-muted mb-1">
                         <span style="color: #ffc107;">
                             {% with promedio=producto.promedio_calificacion %}
-                                {% for i in "12345" %}
-                                    {% if i|add:0 <= promedio %}★{% else %}☆{% endif %}
+                                {% for i in 5|times %}
+                                    {% if i <= promedio %}★{% else %}☆{% endif %}
                                 {% endfor %}
                             {% endwith %}
                         </span>
@@ -104,8 +105,8 @@
                         <p class="small text-muted mb-2">
                             <span style="color: #ffc107;">
                                 {% with promedio=producto.promedio_calificacion %}
-                                    {% for i in "12345" %}
-                                        {% if i|add:0 <= promedio %}★{% else %}☆{% endif %}
+                                    {% for i in 5|times %}
+                                        {% if i <= promedio %}★{% else %}☆{% endif %}
                                     {% endfor %}
                                 {% endwith %}
                             </span>
