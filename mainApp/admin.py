@@ -23,7 +23,7 @@ class ImagenReferenciaInline(admin.TabularInline):
     fields = ("imagen",)
 
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ("id", "cliente", "plataforma", "estado", "pago", "fecha_creacion")
+    list_display = ("id", "cliente", "plataforma", "estado", "pago", "fecha_creacion","token_seguimiento")
     list_filter = ("estado", "pago", "plataforma", "fecha_creacion")
     search_fields = ("cliente", "token_seguimiento", "contacto")
     inlines = [ImagenReferenciaInline]
