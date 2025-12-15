@@ -1,0 +1,155 @@
+{% extends "base.html" %} {% block contenido %}
+
+<div class="container">
+  <h1>Reporte del Sistema</h1>
+
+  <form method="get" class="mb-3">
+    <label
+      >Fecha desde:
+      <input type="date" name="fecha_desde" value="{{ filtros.fecha_desde }}"
+    /></label>
+    <label
+      >Fecha hasta:
+      <input type="date" name="fecha_hasta" value="{{ filtros.fecha_hasta }}"
+    /></label>
+    <button type="submit">Filtrar</button>
+  </form>
+
+  <form method="get" class="mb-3">
+    <div class="mb-2"><strong>Estados:</strong></div>
+    <div class="d-flex flex-wrap gap-2 mb-2">
+      {% for key,label in estados_choices %}
+      <label class="form-check form-check-inline">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          name="estado"
+          value="{{ key }}"
+          {%
+          if
+          key
+          in
+          filtros.estado_sel
+          %}checked{%
+          endif
+          %}
+        />
+        <span class="form-check-label">{{ label }}</span>
+      </label>
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-sm btn-primary">
+      Aplicar estados
+    </button>
+  </form>
+
+  <h3>Gráficos</h3>
+  <div class="row">
+    <div class="col-md-6">
+      <h5>Pedidos por estado</h5>
+      <div
+        class="chart-container"
+        style="position: relative; width: 100%; height: 250px"
+      >
+        <canvas id="pedidosEstadoChart"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h5>Productos más solicitados</h5>
+      <div
+        class="chart-container"
+        style="position: relative; width: 100%; height: 250px"
+      >
+        <canvas id="productosChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <h5>Pedidos por plataforma</h5>
+      <div
+        class="chart-container"
+        style="position: relative; width: 100%; height: 250px">
+      >
+        <canvas id="plataformasChart"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h5>Tabla de resumen</h5>
+      <table class="table table-sm table-striped">
+        <thead>
+          <tr>
+            <th>Métrica</th>
+            <th>Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Estados</td>
+            <td>{{ estados_labels }} - {{ estados_vals }}</td>
+          </tr>
+          <tr>
+            <td>Productos</td>
+            <td>{{ productos_labels }} - {{ productos_vals }}</td>
+          </tr>
+          <tr>
+            <td>Plataformas</td>
+            <td>{{ plataformas_labels }} - {{ plataformas_vals }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const estadosLabels = {{ estados_labels|safe }};
+  const estadosVals = {{ estados_vals|safe }};
+
+  const productosLabels = {{ productos_labels|safe }};
+  const productosVals = {{ productos_vals|safe }};
+
+  const plataformasLabels = {{ plataformas_labels|safe }};
+  const plataformasVals = {{ plataformas_vals|safe }};
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      }
+    }
+  };
+
+  new Chart(document.getElementById('pedidosEstadoChart'), {
+    type: 'bar',
+    data: {
+      labels: estadosLabels,
+      datasets: [{ label: 'Pedidos', data: estadosVals, backgroundColor: 'rgba(54,162,235,0.5)'}]
+    },
+    options: chartOptions
+  });
+
+  new Chart(document.getElementById('productosChart'), {
+    type: 'bar',
+    data: {
+      labels: productosLabels,
+      datasets: [{ label: 'Veces solicitado', data: productosVals, backgroundColor: 'rgba(255,159,64,0.5)'}]
+    },
+    options: chartOptions
+  });
+
+  new Chart(document.getElementById('plataformasChart'), {
+    type: 'pie',
+    data: {
+      labels: plataformasLabels,
+      datasets: [{ data: plataformasVals, backgroundColor: ['#36a2eb','#ff6384','#ffcd56','#4bc0c0','#9966ff','#c9cbcf'] }]
+    },
+    options: chartOptions
+  });
+</script>
+{% endblock %}
