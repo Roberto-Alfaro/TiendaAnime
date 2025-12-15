@@ -119,8 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [STATIC_DIR]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
+STATICFILES = STATIC_DIR
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_DIR
@@ -130,4 +129,5 @@ MEDIA_ROOT = MEDIA_DIR
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Redirigir a la página de login del admin cuando se necesite autenticación
 LOGIN_URL = '/admin/login/'
